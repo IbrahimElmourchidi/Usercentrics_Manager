@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usercentrics Manager Documentation</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for Inter font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f9;
+        }
+        /* Custom styling for the code blocks */
+        pre {
+            background-color: #1f2937; /* Dark gray */
+            color: #d1d5db; /* Light gray text */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+        .code-block-header {
+            color: #9ca3af;
+            font-size: 0.875rem; /* sm */
+            margin-bottom: 0.5rem;
+        }
+        /* Style for tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            background-color: #3b82f6; /* Blue 500 */
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        tr:hover {
+            background-color: #eff6ff; /* Blue 50 */
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="max-w-5xl mx-auto bg-white shadow-xl rounded-xl p-6 md:p-10 lg:p-12">
+
+        <!-- Header -->
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Usercentrics Manager</h1>
+        <p class="text-xl text-gray-600 mb-8 border-b pb-4">A unified, cross-platform privacy compliance facade for Flutter (Web & Mobile).</p>
+
+        <!-- Features -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 border-l-4 border-blue-500 pl-3">✨ Features</h2>
+            <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                <li>**Unified API:** One interface (`PrivacyManager`) for iOS, Android, and Web.</li>
+                <li>**Auto-Injection (Web):** Automatically handles the injection of the Usercentrics CMP script and sets up JS-to-Dart listeners.</li>
+                <li>**Native SDK Wrapper:** Fully wraps the official Usercentrics SDK for high-performance native consent management.</li>
+                <li>**Reactive Stream:** Provides a `consentStream` that emits updates immediately when a user accepts/denies services.</li>
+                <li>**Cross-Device Support:** Built-in support for linking consent sessions to User IDs (`loginUser`).</li>
+            </ul>
+        </section>
+
+        <!-- Installation -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 border-l-4 border-blue-500 pl-3">🛠 Installation</h2>
+
+            <h3 class="text-2xl font-semibold text-gray-700 mt-6 mb-3">1. Add Dependency</h3>
+            <p class="text-gray-700 mb-2">Add the package to your `pubspec.yaml`:</p>
+            <pre><code class="language-yaml">dependencies:
+  usercenteric_manager: ^0.0.1
+</code></pre>
+            <p class="text-sm text-gray-500 mt-2">
+                *Note: You do not need to manually add `usercentrics_sdk` or `universal_html`. These are installed automatically as transitive dependencies.*
+            </p>
+
+            <h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-3">2. Platform Configuration</h3>
+            <p class="text-gray-700">While the Dart setup is automatic, the native platforms require specific configuration to allow the Usercentrics SDK to function.</p>
+
+            <h4 class="text-xl font-medium text-gray-600 mt-5">Android Setup (`android/app/build.gradle`)</h4>
+            <p class="text-gray-700 mb-2">Ensure your `minSdkVersion` is set to at least **21**.</p>
+            <pre><code class="language-gradle">android {
+    defaultConfig {
+        minSdkVersion 21
+    }
+}
+</code></pre>
+
+            <h4 class="text-xl font-medium text-gray-600 mt-5">iOS Setup (`ios/Runner/Info.plist`)</h4>
+            <p class="text-gray-700">You need to add usage descriptions if your app accesses data protected by Apple's frameworks. Ensure your `Podfile` targets **iOS 11.0** or higher.</p>
+
+            <h4 class="text-xl font-medium text-gray-600 mt-5">Web Setup</h4>
+            <p class="text-gray-700">No specific `index.html` changes are required! This package automatically injects the Usercentrics Loader script into the `&lt;head&gt;` of your document when you call `initialize()`.</p>
+        </section>
+
+        <!-- Usage -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 border-l-4 border-blue-500 pl-3">🚀 Usage</h2>
+
+            <h3 class="text-2xl font-semibold text-gray-700 mt-6 mb-3">1. Initialization</h3>
+            <p class="text-gray-700 mb-2">Initialize the manager in your `main()` function:</p>
+            <pre><code class="language-dart">import 'package:usercenteric_manager/usercenteric_manager.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 1. Get the instance
+  final privacyManager = UsercentericManager();
+
+  // 2. Initialize with your Settings ID (From Usercentrics Dashboard)
+  await privacyManager.initialize(
+    settingsId: 'YOUR_USERCENTRICS_SETTINGS_ID',
+    // Optional: Provide a User ID if the user is already logged in
+    uid: 'current-user-id-123', 
+  );
+
+  runApp(const MyApp());
+}
+</code></pre>
+
+            <h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-3">2. Listening to Consent Changes</h3>
+            <p class="text-gray-700 mb-2">Use the `consentStream` to reactively show/hide widgets or initialize 3rd party SDKs.</p>
+            <pre><code class="language-dart">StreamBuilder&lt;List&lt;PrivacyServiceConsent&gt;&gt;(
+  stream: UsercentericManager().consentStream,
+  builder: (context, snapshot) {
+    final consents = snapshot.data ?? [];
+    
+    // Check specific service permission
+    final isGoogleAnalyticsAllowed = consents.any(
+      (c) => c.templateId == 'HkocE3jrj' && c.status
+    );
+
+    if (isGoogleAnalyticsAllowed) {
+      // Initialize Analytics here if not already done
+    }
+
+    return Text("Analytics Allowed: $isGoogleAnalyticsAllowed");
+  },
+);
+</code></pre>
+
+            <h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-3">3. Managing User Sessions</h3>
+            <pre><code class="language-dart">// On Login
+await UsercentericManager().loginUser('unique-user-id');
+
+// On Logout
+await UsercentericManager().logoutUser();
+</code></pre>
+            
+            <h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-3">4. Displaying the UI</h3>
+            <pre><code class="language-dart">// Show the Privacy Banner (First Layer)
+await UsercentericManager().showPrivacyBanner();
+
+// Show the Privacy Manager (Second Layer)
+await UsercentericManager().showPrivacyManager();
+</code></pre>
+        </section>
+        
+        <!-- API Reference -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 border-l-4 border-blue-500 pl-3">📚 API Reference</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-mono"><code>initialize({required String settingsId, String? uid})</code></td>
+                        <td>Initializes the SDK (Native) or Injects Script (Web).</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono"><code>loginUser(String uid)</code></td>
+                        <td>Restores a session for the given <code>uid</code> (ControllerID).</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono"><code>logoutUser()</code></td>
+                        <td>Clears the local session and storage.</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono"><code>showPrivacyBanner()</code></td>
+                        <td>Opens the First Layer (Consent Banner).</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono"><code>showPrivacyManager()</code></td>
+                        <td>Opens the Second Layer (Settings).</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono"><code>setConsentStatus(String serviceId, bool status)</code></td>
+                        <td>Programmatically accepts/denies a specific service.</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono"><code>requestDataDeletion()</code></td>
+                        <td>Clears local data (Right to Erasure compliance helper).</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono"><code>consentStream</code></td>
+                        <td>A <code>Stream&lt;List&lt;PrivacyServiceConsent&gt;&gt;</code> emitting real-time updates.</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono"><code>isInitialized</code></td>
+                        <td>Returns <code>bool</code> indicating if the manager is ready.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Architecture -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 border-l-4 border-blue-500 pl-3">⚙️ Architecture</h2>
+            <p class="text-gray-700 mb-4">This package uses the **Facade Pattern** combined with **Conditional Imports** to handle platform differences. The factory logic ensures the correct native or web implementation is loaded at compile time.</p>
+            
+            <p class="code-block-header">Mermaid Diagram: Conditional Import Flow</p>
+            <pre><code class="language-mermaid">graph TD
+    A[Consumer App] --&gt;|Calls| B(UsercentericManager Facade)
+    B --&gt;|Delegates to| C{Factory}
+    C --&gt;|If dart.library.io| D[Mobile Implementation]
+    C --&gt;|If dart.library.html| E[Web Implementation]
+    C --&gt;|Else| F[Unsupported Stub]
+    D --&gt;|Uses| G[package:usercentrics_sdk]
+    E --&gt;|Uses| H[package:universal_html]
+</code></pre>
+
+            <ul class="list-disc pl-5 space-y-2 text-gray-700 mt-6">
+                <li>**Shared Interface:** `lib/src/interface.dart` defines the contract.</li>
+                <li>**Factory:** `lib/src/factory.dart` decides which file to import at compile time.</li>
+                <li>**Web Impl:** Injects JS scripts and listens to `window.dispatchEvent`.</li>
+                <li>**Mobile Impl:** Calls Native iOS/Android methods via MethodChannels.</li>
+            </ul>
+        </section>
+
+        <!-- Contributors -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 border-l-4 border-blue-500 pl-3">🤝 Contributors</h2>
+            <p class="text-gray-700 mb-4">Thanks to the following individuals for their contributions to this project:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>GitHub</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ibrahim El Mourchidi</td>
+                        <td><a href="https://github.com/IbrahimElmourchidi" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline">https://github.com/IbrahimElmourchidi</a></td>
+                    </tr>
+                    <tr>
+                        <td>Gemini (AI Model)</td>
+                        <td>N/A</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </div>
+</body>
+</html>
