@@ -29,3 +29,8 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 /build/
 /coverage/
+
+
+**/accumilator.dart
+accumilator.dart
+dart_files_combined.txt
