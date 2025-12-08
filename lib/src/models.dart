@@ -34,3 +34,77 @@ class PrivacyServiceConsent {
   String toString() =>
       'PrivacyServiceConsent(name: $name, status: $status, id: $templateId)';
 }
+
+/// Supported languages for Usercentrics CMP.
+enum UsercentricsLanguage {
+  // Africa, Middle East & Asia
+  afrikaans('af'),
+  arabic('ar'), // V2 only
+  armenian('hy'),
+  azerbaijani('az_latn'),
+  belarusian('be'),
+  bulgarian('bg'),
+  bosnian('bs'),
+  catalan('ca'),
+  czech('cs'),
+  welsh('cy'),
+  danish('da'),
+  galician('gl'),
+  german('de'),
+  greek('el'),
+  english('en'),
+  spanish('es'),
+  estonian('et'),
+  persian('fa'), // V2 only (Farsi)
+  finnish('fi'),
+  french('fr'),
+  hebrew('he'), // V2 only
+  hindi('hi'),
+  croatian('hr'),
+  hungarian('hu'),
+  indonesian('id'),
+  icelandic('is'),
+  italian('it'),
+  japanese('ja'),
+  georgian('ka'),
+  kazakh('kk'),
+  korean('ko'),
+  lithuanian('lt'),
+  latvian('lv'),
+  macedonian('mk'),
+  malay('ms'),
+  mongolian('mn'),
+
+  // Norwegian variants & Dutch
+  norwegianBokmal('nb'),
+  dutch('nl'),
+  norwegianNynorsk('nn'),
+  norwegian('no'),
+
+  // Central & South Europe
+  polish('pl'),
+  portuguese('pt'),
+  portugueseBrazil('pt_br'),
+  romanian('ro'),
+  russian('ru'),
+  slovak('sk'),
+  slovenian('sl'),
+  albanian('sq'),
+  serbianCyrillic('sr'),
+  serbianLatin('sr_latn'),
+  swedish('sv'),
+  thai('th'),
+  turkish('tr'),
+  ukrainian('uk'),
+  urdu('ur'), // V2 only
+  uzbekLatin('uz_latn'),
+  vietnamese('vi'),
+
+  // Chinese variants
+  chineseSimplified('zh'),
+  chineseCantoneseHk('zh_hk'),
+  chineseTraditional('zh_tw');
+
+  final String code;
+  const UsercentricsLanguage(this.code);
+}

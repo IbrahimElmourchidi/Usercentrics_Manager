@@ -1,20 +1,27 @@
 name: usercentrics_manager
-description: A helper package to manage user-centric privacy and compliance across platforms.
-version: 0.0.1
-homepage: https://www.utanium.org/usercenteric_manager
+description: A unified, cross-platform privacy compliance facade for Flutter apps targeting iOS, Android, and Web, built on top of Usercentrics CMP.
+version: 0.1.0
+homepage: https://github.com/IbrahimElmourchidi/usercentrics_manager
+repository: https://github.com/IbrahimElmourchidi/usercentrics_manager
+issue_tracker: https://github.com/IbrahimElmourchidi/usercentrics_manager/issues
 
 environment:
-  sdk: ">=3.0.0 <4.0.0" # Adjust based on your current required Dart version
-  flutter: ">=3.10.0" # Adjust based on your current required Flutter version
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  usercentrics_sdk: ^2.24.2
   universal_html: ^2.3.0
-  usercentrics_sdk: ^2.24.1
-  # Add any other core dependencies needed for the package here (e.g., http, path)
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.0
+
+# Specify supported platforms
+platforms:
+  android:
+  ios:
+  web:

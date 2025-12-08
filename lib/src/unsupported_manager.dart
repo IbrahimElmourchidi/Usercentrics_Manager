@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
+
 import 'interface.dart';
 import 'models.dart';
 
@@ -15,9 +17,12 @@ class UsercentricsUnsupportedManager implements PrivacyManager {
   bool get isInitialized => false;
 
   @override
-  Future<void> initialize({required String settingsId, String? uid}) async {
+  Future<void> initialize(
+      {required String settingsId,
+      String? uid,
+      UsercentricsLanguage? defaultLanguage}) async {
     // Log a warning that a stub is being used on an unsupported platform
-    print(
+    debugPrint(
         'UsercentricsManager: Using unsupported stub. No consent management available.');
   }
 
@@ -32,6 +37,9 @@ class UsercentricsUnsupportedManager implements PrivacyManager {
 
   @override
   Future<void> showPrivacyManager() async {}
+
+  @override
+  Future<void> showPrivacyBannerIfNeeded() async {}
 
   @override
   Future<void> setConsentStatus(String serviceId, bool status) async {}
@@ -57,6 +65,12 @@ class UsercentricsUnsupportedManager implements PrivacyManager {
 
   @override
   Future<bool> isUserTracked() async => false;
+
+  @override
+  Future<void> changeLanguage(UsercentricsLanguage language) async {}
+
+  @override
+  void dispose() {}
 }
 
 /// Factory function required by lib/src/factory.dart.

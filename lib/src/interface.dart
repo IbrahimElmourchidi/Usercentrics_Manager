@@ -12,12 +12,16 @@ abstract class PrivacyManager {
   /// initialized.
   bool get isInitialized;
 
-  /// Initializes the CMP/SDK with the necessary settings. This must be called
-  /// once at application startup.
+  /// Initializes the CMP/SDK with the necessary settings.
   ///
-  /// [settingsId]: The unique ID provided by the CMP for the application configuration.
+  /// [settingsId]: The unique ID provided by the CMP.
   /// [uid]: Optional user ID to restore a cross-device session.
-  Future<void> initialize({required String settingsId, String? uid});
+  /// [language]: Optional language setting for the CMP UI.
+  Future<void> initialize({
+    required String settingsId,
+    String? uid,
+    UsercentricsLanguage? defaultLanguage,
+  });
 
   /// Links the current session to a logged-in user, facilitating cross-device consent.
   Future<void> loginUser(String uid);
@@ -30,6 +34,10 @@ abstract class PrivacyManager {
 
   /// Displays the second layer of the CMP (e.g., the detailed settings manager).
   Future<void> showPrivacyManager();
+
+  /// Automatically shows the Privacy Banner if consent is required
+  /// (i.e., no decision has been made yet).
+  Future<void> showPrivacyBannerIfNeeded();
 
   // --- Compliance Operations ---
 
@@ -57,4 +65,13 @@ abstract class PrivacyManager {
   /// Convenience method to check if any non-essential tracking/data processing
   /// is currently enabled based on existing consents.
   Future<bool> isUserTracked();
+
+  /// Dynamically changes the language of the CMP UI and reloads content.
+  ///
+  /// The language must be configured and visible in the Usercentrics Admin Interface.
+  Future<void> changeLanguage(UsercentricsLanguage language);
+
+  /// Disposes of internal resources (e.g., stream controllers, event listeners).
+  /// Should be called when the manager is no longer needed (e.g., app shutdown).
+  void dispose();
 }

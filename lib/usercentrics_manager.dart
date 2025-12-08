@@ -13,8 +13,7 @@ export 'src/interface.dart';
 /// interface methods to the outside world without exposing the complexities
 /// of platform-specific implementations.
 class UsercentricsManager {
-  static final UsercentricsManager _instance = UsercentricsManager._internal();
-  factory UsercentricsManager() => _instance;
+  static final UsercentricsManager instance = UsercentricsManager._internal();
 
   // The private delegate holds the concrete platform implementation (Web, Mobile, or Unsupported)
   late final PrivacyManager _delegate;
@@ -26,9 +25,19 @@ class UsercentricsManager {
 
   // --- Exposed API (Forwarded to the delegate) ---
 
-  /// Initialize the privacy manager with the Usercentrics settings ID.
-  Future<void> initialize({required String settingsId, String? uid}) =>
-      _delegate.initialize(settingsId: settingsId, uid: uid);
+  /// Initialize the privacy manager.
+  ///
+  /// [language] allows setting the CMP language explicitly using the [UsercentricsLanguage] enum.
+  Future<void> initialize({
+    required String settingsId,
+    String? uid,
+    UsercentricsLanguage? defaultLanguage,
+  }) =>
+      _delegate.initialize(
+        settingsId: settingsId,
+        uid: uid,
+        defaultLanguage: defaultLanguage,
+      );
 
   /// Links the session to a logged-in user.
   Future<void> loginUser(String uid) => _delegate.loginUser(uid);
@@ -41,6 +50,10 @@ class UsercentricsManager {
 
   /// Show the second layer (Detailed Privacy Manager).
   Future<void> showPrivacyManager() => _delegate.showPrivacyManager();
+
+  /// Shows the banner only if the user has not yet given/denied consent.
+  Future<void> showPrivacyBannerIfNeeded() =>
+      _delegate.showPrivacyBannerIfNeeded();
 
   /// Set the consent status for a specific service ID (Template ID).
   Future<void> setConsentStatus(String serviceId, bool status) =>
@@ -67,6 +80,14 @@ class UsercentricsManager {
   /// Stream of current service consents.
   Stream<List<PrivacyServiceConsent>> get consentStream =>
       _delegate.consentStream;
+
+  /// Dynamically changes the language of the CMP UI.
+  Future<void> changeLanguage(UsercentricsLanguage language) =>
+      _delegate.changeLanguage(language);
+
+  /// Disposes of internal resources.
+  /// Call this when your app shuts down or if you need to reinitialize the manager.
+  void dispose() => _delegate.dispose();
 
   /// Current initialization status.
   bool get isInitialized => _delegate.isInitialized;
